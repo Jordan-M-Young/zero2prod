@@ -13,6 +13,23 @@ async fn health_check() -> HttpResponse {
 }
 
 
+#[derive(serde::Deserialize)]
+struct FormData {
+    email: String,
+    name: String
+}
+
+
+async fn subscribe(form: web::Form<FormData>) -> HttpResponse {
+    format!("Welcom {}!",form.email);
+    format!("Wecom {}!",form.name);
+    HttpResponse::Ok().finish()
+}
+
+
+
+
+
 
 pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     println!("starting server......");
@@ -20,6 +37,7 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
         App::new()
         .route("/", web::get().to(greet))
         .route("/health_check", web::get().to(health_check))
+        .route("/subscriptions",web::post().to(subscribe))
     })
     .listen(listener)?
     .run();
